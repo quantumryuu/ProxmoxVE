@@ -9,21 +9,21 @@ source <(curl -s https://raw.githubusercontent.com/quantumryuu/ProxmoxVE/build/m
 function header_info {
 clear
 cat <<"EOF"
-    ____                 ________  ______    __
-   /  _/___  _________  /  _/ __ \/ ____/___/ /
-   / // __ \/ ___/ __ \ / // /_/ / /   / __  / 
- _/ // / / (__  ) /_/ // // _, _/ /___/ /_/ /  
-/___/_/ /_/____/ .___/___/_/ |_|\____/\__,_/   
-              /_/                              
- 
+    _______           ______         ____________
+   / ____(_)_______  / __/ /_  __   /  _/  _/  _/
+  / /_  / / ___/ _ \/ /_/ / / / /   / / / / / /  
+ / __/ / / /  /  __/ __/ / /_/ /  _/ /_/ /_/ /   
+/_/   /_/_/   \___/_/ /_/\__, /  /___/___/___/   
+                        /____/                   
+
 EOF
 }
 header_info
 echo -e "Loading..."
-APP="InspIRCd"
+APP="Firefly III"
 var_disk="2"
 var_cpu="1"
-var_ram="512"
+var_ram="1024"
 var_os="debian"
 var_version="12"
 variables
@@ -95,4 +95,4 @@ description
 
 msg_ok "Completed Successfully!\n"
 echo -e "${APP} should be reachable by going to the following URL.
-         ${BL}http://${IP}:3000${CL} \n"
+         ${BL}http://${IP}{CL} \n"
