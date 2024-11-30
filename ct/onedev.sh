@@ -9,21 +9,20 @@ source <(curl -s https://raw.githubusercontent.com/quantumryuu/ProxmoxVE/build/m
 function header_info {
 clear
 cat <<"EOF"
-    ____                 ________  ______    __
-   /  _/___  _________  /  _/ __ \/ ____/___/ /
-   / // __ \/ ___/ __ \ / // /_/ / /   / __  / 
- _/ // / / (__  ) /_/ // // _, _/ /___/ /_/ /  
-/___/_/ /_/____/ .___/___/_/ |_|\____/\__,_/   
-              /_/                              
- 
+   ____             ____           
+  / __ \____  ___  / __ \___ _   __
+ / / / / __ \/ _ \/ / / / _ \ | / /
+/ /_/ / / / /  __/ /_/ /  __/ |/ / 
+\____/_/ /_/\___/_____/\___/|___/  
+                                    
 EOF
 }
 header_info
 echo -e "Loading..."
-APP="InspIRCd"
-var_disk="2"
-var_cpu="1"
-var_ram="512"
+APP="OneDev"
+var_disk="4"
+var_cpu="2"
+var_ram="2048"
 var_os="debian"
 var_version="12"
 variables
@@ -58,29 +57,32 @@ header_info
 check_container_storage
 check_container_resources
 
-  if [[ ! -f /lib/systemd/system/inspircd.service ]]; then
+  if [[ ! -f /etc/systemd/system/onedev.service ]]; then
     msg_error "No ${APP} Installation Found!"
     exit
   fi
-  RELEASE=$(curl -s https://api.github.com/repos/inspircd/inspircd/releases/latest | grep "tag_name" | awk '{print substr($2, 3, length($2)-4) }')
-  if [[ ! -f /opt/${APP}_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/${APP}_version.txt)" ]]; then
+  GITHUB_RELEASE=$(curl -s https://api.github.com/repos/theonedev/onedev/releases/latest | grep "tag_name" | awk '{print substr($2, 3, length($2)-4) }')
+  if [[ ! -f /opt/${APP}_version.txt ]] || [[ "${GITHUB_RELEASE}" != "$(cat /opt/${APP}_version.txt)" ]]; then
     msg_info "Stopping Service"
-    systemctl stop inspircd
+    systemctl stop onedev
     msg_ok "Stopped Service"
 
     msg_info "Updating ${APP} to v${RELEASE}"
     cd /opt
-    wget -q https://github.com/inspircd/inspircd/releases/download/v${RELEASE}/inspircd_${RELEASE}.deb12u1_amd64.deb
-    apt-get install "./inspircd_${RELEASE}.deb12u1_amd64.deb" -y &>/dev/nul
+    wget -q https://code.onedev.io/onedev/server/~site/onedev-latest.tar.gz
+    tar -xzf onedev-latest.tar.gz
+    /opt/onedev-latest/bin/upgrade.sh /opt/onedev
+    RELEASE=$(cat /opt/onedev/release.properties | grep "version" | cut -d'=' -f2)
     echo "${RELEASE}" >"/opt/${APP}_version.txt"
     msg_ok "Updated ${APP} to v${RELEASE}"
 
     msg_info "Starting Service"
-    systemctl start inspircd
+    systemctl start onedev
     msg_ok "Started Service"
 
     msg_info "Cleaning up"
-    rm -rf /opt/inspircd_${RELEASE}.deb12u1_amd64.deb
+    rm -rf /opt/onedev-latest
+    rm -rf /opt/onedev-latest.tar.gz
     msg_ok "Cleaned"
     msg_ok "Updated Successfully"
   else
