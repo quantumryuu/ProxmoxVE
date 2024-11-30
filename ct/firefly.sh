@@ -78,8 +78,6 @@ check_container_resources
     tar -xzf FireflyIII-v${RELEASE}.tar.gz -C /opt/firefly --exclude='storage'
     mv /opt/.env /opt/firefly/.env
     mv /opt/storage /opt/firefly/storage
-    chown -R www-data:www-data /opt/firefly
-    chmod -R 775 /opt/firefly/storage
     cd /opt/firefly 
     composer install --no-dev &>/dev/null
     php artisan migrate --seed --force &>/dev/null
@@ -88,6 +86,9 @@ check_container_resources
     php artisan view:clear &>/dev/null
     php artisan firefly:upgrade-database &>/dev/null
     php artisan firefly:laravel-passport-keys &>/dev/null
+    chown -R www-data:www-data /opt/firefly
+    chmod -R 775 /opt/firefly/storage
+
     echo "${RELEASE}" >"/opt/${APP}_version.txt" &>/dev/null
     msg_ok "Updated ${APP} to v${RELEASE}"
 
