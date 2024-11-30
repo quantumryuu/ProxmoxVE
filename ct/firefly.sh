@@ -20,7 +20,7 @@ EOF
 }
 header_info
 echo -e "Loading..."
-APP="Firefly III"
+APP="Firefly"
 var_disk="2"
 var_cpu="1"
 var_ram="1024"
