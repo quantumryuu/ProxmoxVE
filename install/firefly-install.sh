@@ -55,19 +55,29 @@ cd /opt
 wget -q "https://github.com/firefly-iii/firefly-iii/releases/download/${RELEASE}/FireflyIII-${RELEASE}.tar.gz"
 mkdir -p /opt/firefly-iii
 tar -xzf FireflyIII-${RELEASE}.tar.gz -C /opt/firefly-iii
+msg_ok "Downloaded"
+msg_info "chown"
 chown -R www-data:www-data /opt/firefly-iii
 chmod -R 775 /opt/firefly-iii/storage
+msg_ok "chown"
+msg_info "env"
 cd /opt/firefly-iii
 cp .env.example .env
 sed -i "s/DB_HOST=.*/DB_HOST=localhost/" /opt/firefly-iii/.env
 sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=$DB_PASS/" /opt/firefly-iii/.env
+msg_ok "env"
+msg_info "php composer"
 echo "export COMPOSER_ALLOW_SUPERUSER=1" >> ~/.bashrc
 source ~/.bashrc
 $STD composer install --no-dev --no-plugins --no-interaction
-$STD php artisan firefly-iii:upgrade-database --no-interaction --force
-$STD php artisan firefly-iii:correct-database --no-interaction --force
-$STD php artisan firefly-iii:report-integrity --no-interaction --force
-$STD php artisan firefly-iii:laravel-passport-keys --no-interaction --force
+msg_ok "php composer"
+msg_info "artisan"
+$STD php artisan firefly-iii:upgrade-database
+$STD php artisan firefly-iii:correct-database
+$STD php artisan firefly-iii:report-integrity
+$STD php artisan firefly-iii:laravel-passport-keys
+msg_ok "artisan"
+msg_info "versioning"
 echo "${RELEASE}" >"/opt/${APPLICATION}_version.txt"
 msg_ok "Installed Firefly III"
 
