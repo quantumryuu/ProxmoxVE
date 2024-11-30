@@ -58,7 +58,7 @@ header_info
 check_container_storage
 check_container_resources
 
-  if [[ ! -d /opt/firefly-iii ]]; then
+  if [[ ! -d /opt/firefly ]]; then
     msg_error "No ${APP} Installation Found!"
     exit
   fi
@@ -69,25 +69,25 @@ check_container_resources
     msg_ok "Stopped Apache2"
 
     msg_info "Updating ${APP} to v${RELEASE}"
-    cp /opt/firefly-iii/.env /opt/.env
-    cp -r /opt/firefly-iii/storage /opt/storage
-    rm -rf /opt/firefly-iii
+    cp /opt/firefly/.env /opt/.env
+    cp -r /opt/firefly/storage /opt/storage
+    rm -rf /opt/firefly
     cd /opt
     wget -q "https://github.com/firefly-iii/firefly-iii/releases/download/v${RELEASE}/FireflyIII-v${RELEASE}.tar.gz"
-    mkdir -p /opt/firefly-iii
-    tar -xzf FireflyIII-v${RELEASE}.tar.gz -C /opt/firefly-iii --exclude='storage'
-    mv /opt/.env /opt/firefly-iii/.env
-    mv /opt/storage /opt/firefly-iii/storage
-    chown -R www-data:www-data /opt/firefly-iii
-    chmod -R 775 /opt/firefly-iii/storage
-    cd /opt/firefly-iii
+    mkdir -p /opt/firefly
+    tar -xzf FireflyIII-v${RELEASE}.tar.gz -C /opt/firefly --exclude='storage'
+    mv /opt/.env /opt/firefly/.env
+    mv /opt/storage /opt/firefly/storage
+    chown -R www-data:www-data /opt/firefly
+    chmod -R 775 /opt/firefly/storage
+    cd /opt/firefly 
     composer install --no-dev &>/dev/null
-    php artisan migrate --seed &>/dev/null
-    php artisan firefly-iii:decrypt-all &>/dev/null
+    php artisan migrate --seed --force &>/dev/null
+    php artisan firefly:decrypt-all &>/dev/null
     php artisan cache:clear &>/dev/null
     php artisan view:clear &>/dev/null
-    php artisan firefly-iii:upgrade-database &>/dev/null
-    php artisan firefly-iii:laravel-passport-keys &>/dev/null 
+    php artisan firefly:upgrade-database &>/dev/null
+    php artisan firefly:laravel-passport-keys &>/dev/null
     echo "${RELEASE}" >"/opt/${APP}_version.txt" &>/dev/null
     msg_ok "Updated ${APP} to v${RELEASE}"
 

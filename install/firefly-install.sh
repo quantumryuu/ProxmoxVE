@@ -53,31 +53,31 @@ msg_info "Installing Firefly III (Patience)"
 RELEASE=$(curl -s https://api.github.com/repos/firefly-iii/firefly-iii/releases/latest | grep "tag_name" | awk '{print substr($2, 3, length($2)-4)}')
 cd /opt
 wget -q "https://github.com/firefly-iii/firefly-iii/releases/download/v${RELEASE}/FireflyIII-v${RELEASE}.tar.gz"
-mkdir -p /opt/firefly-iii
-tar -xzf FireflyIII-v${RELEASE}.tar.gz -C /opt/firefly-iii
-chown -R www-data:www-data /opt/firefly-iii
-chmod -R 775 /opt/firefly-iii/storage
-cd /opt/firefly-iii
+mkdir -p /opt/firefly
+tar -xzf FireflyIII-v${RELEASE}.tar.gz -C /opt/firefly
+chown -R www-data:www-data /opt/firefly
+chmod -R 775 /opt/firefly/storage
+cd /opt/firefly
 cp .env.example .env
-sed -i "s/DB_HOST=.*/DB_HOST=localhost/" /opt/firefly-iii/.env
-sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=$DB_PASS/" /opt/firefly-iii/.env
+sed -i "s/DB_HOST=.*/DB_HOST=localhost/" /opt/firefly/.env
+sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=$DB_PASS/" /opt/firefly/.env
 echo "export COMPOSER_ALLOW_SUPERUSER=1" >> ~/.bashrc
 source ~/.bashrc
 $STD composer install --no-dev --no-plugins --no-interaction
-$STD php artisan firefly-iii:upgrade-database
-$STD php artisan firefly-iii:correct-database
-$STD php artisan firefly-iii:report-integrity
-$STD php artisan firefly-iii:laravel-passport-keys
+$STD php artisan firefly:upgrade-database
+$STD php artisan firefly:correct-database
+$STD php artisan firefly:report-integrity
+$STD php artisan firefly:laravel-passport-keys
 echo "${RELEASE}" >"/opt/${APPLICATION}_version.txt"
 msg_ok "Installed Firefly III"
 
 msg_info "Creating Service"
-cat <<EOF >/etc/apache2/sites-available/firefly-iii.conf
+cat <<EOF >/etc/apache2/sites-available/firefly.conf
 <VirtualHost *:80>
   ServerAdmin webmaster@localhost
-  DocumentRoot /opt/firefly-iii/public/
+  DocumentRoot /opt/firefly/public/
 
-   <Directory /opt/firefly-iii/public>
+   <Directory /opt/firefly/public>
         Options FollowSymLinks
         AllowOverride All
         Require all granted
@@ -90,7 +90,7 @@ cat <<EOF >/etc/apache2/sites-available/firefly-iii.conf
 EOF
 $STD a2enmod php8.3
 $STD a2enmod rewrite
-$STD a2ensite firefly-iii.conf
+$STD a2ensite firefly.conf
 $STD a2dissite 000-default.conf  
 $STD systemctl reload apache2
 msg_ok "Created Service"
