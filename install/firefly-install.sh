@@ -99,7 +99,7 @@ motd_ssh
 customize
 
 msg_info "Cleaning up"
-rm -rf /opt/FireflyIII-${RELEASE}.tar.gz
+rm -rf /opt/FireflyIII-v${RELEASE}.tar.gz
 $STD apt-get -y autoremove
 $STD apt-get -y autoclean
 msg_ok "Cleaned"

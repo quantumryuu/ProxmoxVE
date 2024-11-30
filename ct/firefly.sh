@@ -95,7 +95,7 @@ check_container_resources
     msg_ok "Started Apache2"
 
     msg_info "Cleaning up"
-    rm -rf /opt/FireflyIII-${RELEASE}.tar.gz
+    rm -rf /opt/FireflyIII-v${RELEASE}.tar.gz
     msg_ok "Cleaned"
     msg_ok "Updated Successfully"
   else
