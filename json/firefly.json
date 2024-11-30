@@ -1,6 +1,6 @@
 {
     "name": "Firefly III",
-    "slug": "firefly-iii",
+    "slug": "firefly",
     "categories": [
       0
     ],
@@ -16,7 +16,7 @@
     "install_methods": [
       {
         "type": "default",
-        "script": "/ct/firefly-iii.sh",
+        "script": "/ct/firefly.sh",
         "resources": {
           "cpu": 1,
           "ram": 1024,
