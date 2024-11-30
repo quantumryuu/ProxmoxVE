@@ -29,6 +29,7 @@ wget -q https://code.onedev.io/onedev/server/~site/onedev-latest.tar.gz
 tar -xzf onedev-latest.tar.gz
 mv /opt/onedev-latest /opt/onedev
 $STD /opt/onedev/bin/server.sh install
+systemctl start onedev
 RELEASE=$(cat /opt/onedev/release.properties | grep "version" | cut -d'=' -f2)
 echo "${RELEASE}" >"/opt/${APPLICATION}_version.txt"
 msg_ok "Installed OneDev"
