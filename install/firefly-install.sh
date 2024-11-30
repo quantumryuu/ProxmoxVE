@@ -20,7 +20,7 @@ $STD apt-get install -y \
     sudo
 curl -sSLo /usr/share/keyrings/deb.sury.org-php.gpg https://packages.sury.org/php/apt.gpg
 echo "deb [signed-by=/usr/share/keyrings/deb.sury.org-php.gpg] https://packages.sury.org/php/ bookworm main" >/etc/apt/sources.list.d/php.list
-apt-get update
+$STD apt-get update
 $STD apt-get install -y \
     apache2 \
     php8.3 \
@@ -63,11 +63,11 @@ sed -i "s/DB_HOST=.*/DB_HOST=localhost/" /opt/firefly-iii/.env
 sed -i "s/DB_PASSWORD=.*/DB_PASSWORD=$DB_PASS/" /opt/firefly-iii/.env
 echo "export COMPOSER_ALLOW_SUPERUSER=1" >> ~/.bashrc
 source ~/.bashrc
-composer install --no-dev --no-plugins --no-interaction
-php artisan firefly-iii:upgrade-database
-php artisan firefly-iii:correct-database
-php artisan firefly-iii:report-integrity
-php artisan firefly-iii:laravel-passport-keys
+$STD composer install --no-dev --no-plugins --no-interaction
+$STD php artisan firefly-iii:upgrade-database --no-interaction --force
+$STD php artisan firefly-iii:correct-database --no-interaction --force
+$STD php artisan firefly-iii:report-integrity --no-interaction --force
+$STD php artisan firefly-iii:laravel-passport-keys --no-interaction --force
 echo "${RELEASE}" >"/opt/${APPLICATION}_version.txt"
 msg_ok "Installed Firefly III"
 
