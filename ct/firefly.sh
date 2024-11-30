@@ -58,29 +58,44 @@ header_info
 check_container_storage
 check_container_resources
 
-  if [[ ! -f /lib/systemd/system/inspircd.service ]]; then
+  if [[ ! -d /opt/firefly ]]; then
     msg_error "No ${APP} Installation Found!"
     exit
   fi
-  RELEASE=$(curl -s https://api.github.com/repos/inspircd/inspircd/releases/latest | grep "tag_name" | awk '{print substr($2, 3, length($2)-4) }')
+  RELEASE=$(curl -s https://api.github.com/repos/firefly-iii/firefly-iii/releases/latest | grep "tag_name" | awk '{print substr($2, 2, length($2)-3) }')
   if [[ ! -f /opt/${APP}_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/${APP}_version.txt)" ]]; then
-    msg_info "Stopping Service"
-    systemctl stop inspircd
-    msg_ok "Stopped Service"
+    msg_info "Stopping Apache2"
+    systemctl stop apache2
+    msg_ok "Stopped Apache2"
 
     msg_info "Updating ${APP} to v${RELEASE}"
+    cp /opt/firefly-iii/.env /opt/.env
+    cp -r /opt/firefly-iii/storage /opt/storage
+    rm -rf /opt/firefly-iii
     cd /opt
-    wget -q https://github.com/inspircd/inspircd/releases/download/v${RELEASE}/inspircd_${RELEASE}.deb12u1_amd64.deb
-    apt-get install "./inspircd_${RELEASE}.deb12u1_amd64.deb" -y &>/dev/nul
-    echo "${RELEASE}" >"/opt/${APP}_version.txt"
+    wget -q "https://github.com/firefly-iii/firefly-iii/releases/download/${RELEASE}/FireflyIII-${RELEASE}.tar.gz"
+    mkdir -p /opt/firefly-iii
+    tar -xzf FireflyIII-${RELEASE}.tar.gz -C /opt/firefly-iii --exclude='storage'
+    chown -R www-data:www-data /opt/firefly-iii
+    chmod -R 775 /opt/firefly-iii/storage
+    mv /opt/.env /opt/firefly-iii/.env
+    mv /opt/storage /opt/firefly-iii/storage
+    COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev  &>/dev/null
+    php artisan migrate --seed &>/dev/null
+    php artisan firefly-iii:decrypt-all &>/dev/null
+    php artisan cache:clear &>/dev/null
+    php artisan view:clear &>/dev/null
+    php artisan firefly-iii:upgrade-database &>/dev/null
+    php artisan firefly-iii:laravel-passport-keys &>/dev/null 
+    echo "${RELEASE}" >"/opt/${APP}_version.txt" &>/dev/null
     msg_ok "Updated ${APP} to v${RELEASE}"
 
-    msg_info "Starting Service"
-    systemctl start inspircd
-    msg_ok "Started Service"
+    msg_info "Starting Apache2"
+    systemctl start apache2
+    msg_ok "Started Apache2"
 
     msg_info "Cleaning up"
-    rm -rf /opt/inspircd_${RELEASE}.deb12u1_amd64.deb
+    rm -rf /opt/FireflyIII-${RELEASE}.tar.gz
     msg_ok "Cleaned"
     msg_ok "Updated Successfully"
   else
