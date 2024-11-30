@@ -50,11 +50,11 @@ msg_ok "Set up database"
 
 
 msg_info "Installing Firefly III (Patience)"
-RELEASE=$(curl -s https://api.github.com/repos/firefly-iii/firefly-iii/releases/latest | grep "tag_name" | awk '{print substr($2, 2, length($2)-3) }')
+RELEASE=$(curl -s https://api.github.com/repos/firefly-iii/firefly-iii/releases/latest | grep "tag_name" | awk '{print substr($2, 3, length($2)-4)}')
 cd /opt
-wget -q "https://github.com/firefly-iii/firefly-iii/releases/download/${RELEASE}/FireflyIII-${RELEASE}.tar.gz"
+wget -q "https://github.com/firefly-iii/firefly-iii/releases/download/v${RELEASE}/FireflyIII-v${RELEASE}.tar.gz"
 mkdir -p /opt/firefly-iii
-tar -xzf FireflyIII-${RELEASE}.tar.gz -C /opt/firefly-iii
+tar -xzf FireflyIII-v${RELEASE}.tar.gz -C /opt/firefly-iii
 chown -R www-data:www-data /opt/firefly-iii
 chmod -R 775 /opt/firefly-iii/storage
 cd /opt/firefly-iii

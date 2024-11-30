@@ -62,7 +62,7 @@ check_container_resources
     msg_error "No ${APP} Installation Found!"
     exit
   fi
-  RELEASE=$(curl -s https://api.github.com/repos/firefly-iii/firefly-iii/releases/latest | grep "tag_name" | awk '{print substr($2, 2, length($2)-3) }')
+  RELEASE=$(curl -s https://api.github.com/repos/firefly-iii/firefly-iii/releases/latest | grep "tag_name" | awk '{print substr($2, 3, length($2)-4)}')
   if [[ ! -f /opt/${APP}_version.txt ]] || [[ "${RELEASE}" != "$(cat /opt/${APP}_version.txt)" ]]; then
     msg_info "Stopping Apache2"
     systemctl stop apache2
@@ -73,14 +73,14 @@ check_container_resources
     cp -r /opt/firefly-iii/storage /opt/storage
     rm -rf /opt/firefly-iii
     cd /opt
-    wget -q "https://github.com/firefly-iii/firefly-iii/releases/download/${RELEASE}/FireflyIII-${RELEASE}.tar.gz"
+    wget -q "https://github.com/firefly-iii/firefly-iii/releases/download/v${RELEASE}/FireflyIII-v${RELEASE}.tar.gz"
     mkdir -p /opt/firefly-iii
-    tar -xzf FireflyIII-${RELEASE}.tar.gz -C /opt/firefly-iii --exclude='storage'
+    tar -xzf FireflyIII-v${RELEASE}.tar.gz -C /opt/firefly-iii --exclude='storage'
     mv /opt/.env /opt/firefly-iii/.env
     mv /opt/storage /opt/firefly-iii/storage
     chown -R www-data:www-data /opt/firefly-iii
     chmod -R 775 /opt/firefly-iii/storage
-    COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev  &>/dev/null
+    composer install --no-dev  &>/dev/null
     php artisan migrate --seed &>/dev/null
     php artisan firefly-iii:decrypt-all &>/dev/null
     php artisan cache:clear &>/dev/null
