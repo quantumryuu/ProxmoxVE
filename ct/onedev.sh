@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -s https://raw.githubusercontent.com/quantumryuu/ProxmoxVE/build/misc/build.func)
-#source <(curl -s https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -s https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2024 community-scripts ORG
 # Author: kristocopani
 # License: MIT
@@ -71,7 +70,7 @@ check_container_resources
     cd /opt
     wget -q https://code.onedev.io/onedev/server/~site/onedev-latest.tar.gz
     tar -xzf onedev-latest.tar.gz
-    /opt/onedev-latest/bin/upgrade.sh /opt/onedev
+    /opt/onedev-latest/bin/upgrade.sh /opt/onedev >/dev/null
     RELEASE=$(cat /opt/onedev/release.properties | grep "version" | cut -d'=' -f2)
     echo "${RELEASE}" >"/opt/${APP}_version.txt"
     msg_ok "Updated ${APP} to v${RELEASE}"
