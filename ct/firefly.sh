@@ -80,7 +80,7 @@ check_container_resources
     mv /opt/storage /opt/firefly-iii/storage
     chown -R www-data:www-data /opt/firefly-iii
     chmod -R 775 /opt/firefly-iii/storage
-    composer install --no-dev  &>/dev/null
+    composer install --no-dev
     php artisan migrate --seed &>/dev/null
     php artisan firefly-iii:decrypt-all &>/dev/null
     php artisan cache:clear &>/dev/null
