@@ -18,7 +18,7 @@ $STD apt-get install -y \
     curl \
     mc \
     sudo \
-    openjdk-21-jdk \
+    default-jdk \
     git
 msg_ok "Installed Dependencies"
 
