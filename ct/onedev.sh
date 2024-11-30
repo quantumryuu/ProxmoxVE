@@ -67,7 +67,7 @@ check_container_resources
     systemctl stop onedev
     msg_ok "Stopped Service"
 
-    msg_info "Updating ${APP} to v${RELEASE}"
+    msg_info "Updating ${APP} to v${GITHUB_RELEASE}"
     cd /opt
     wget -q https://code.onedev.io/onedev/server/~site/onedev-latest.tar.gz
     tar -xzf onedev-latest.tar.gz
