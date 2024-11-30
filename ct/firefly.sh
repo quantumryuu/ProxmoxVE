@@ -76,10 +76,10 @@ check_container_resources
     wget -q "https://github.com/firefly-iii/firefly-iii/releases/download/${RELEASE}/FireflyIII-${RELEASE}.tar.gz"
     mkdir -p /opt/firefly-iii
     tar -xzf FireflyIII-${RELEASE}.tar.gz -C /opt/firefly-iii --exclude='storage'
-    chown -R www-data:www-data /opt/firefly-iii
-    chmod -R 775 /opt/firefly-iii/storage
     mv /opt/.env /opt/firefly-iii/.env
     mv /opt/storage /opt/firefly-iii/storage
+    chown -R www-data:www-data /opt/firefly-iii
+    chmod -R 775 /opt/firefly-iii/storage
     COMPOSER_ALLOW_SUPERUSER=1 composer install --no-dev  &>/dev/null
     php artisan migrate --seed &>/dev/null
     php artisan firefly-iii:decrypt-all &>/dev/null
