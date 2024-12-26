@@ -16,7 +16,7 @@
     "install_methods": [
       {
         "type": "default",
-        "script": "/ct/jenkins.sh",
+        "script": "ct/jenkins.sh",
         "resources": {
           "cpu": 2,
           "ram": 1024,
