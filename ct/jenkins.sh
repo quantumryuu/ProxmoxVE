@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
-source <(curl -s https://raw.githubusercontent.com/quantumryuu/ProxmoxVE/build/misc/build.func)
-#source <(curl -s https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
+source <(curl -s https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2024 community-scripts ORG
 # Author: kristocopani
 # License: MIT
@@ -26,9 +25,18 @@ color
 catch_errors
 
 function update_script() {
-  header_info
-  check_container_storage
-  check_container_resources
+    header_info
+    check_container_storage
+    check_container_resources
+    if [[ ! -d /var/lib/jenkins ]]; then
+        msg_error "No ${APP} Installation Found!"
+        exit
+    fi
+    msg_info "Updating $APP LXC"
+    apt-get update &>/dev/null
+    apt-get -y upgrade &>/dev/null
+    msg_ok "Updated $APP LXC"
+    exit
 }
 
 start
@@ -38,4 +46,4 @@ description
 msg_ok "Completed Successfully!\n"
 echo -e "${CREATING}${GN}${APP} setup has been successfully initialized!${CL}"
 echo -e "${INFO}${YW} Access it using the following URL:${CL}"
-echo -e "${TAB}${GATEWAY}${BGN}http://${IP}:3000${CL}"
+echo -e "${TAB}${GATEWAY}${BGN}http://${IP}:8080${CL}"
