@@ -4,6 +4,7 @@ source <(curl -s https://raw.githubusercontent.com/community-scripts/ProxmoxVE/m
 # Author: kristocopani
 # License: MIT
 # https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
+# Source: https://www.jenkins.io/
 
 # App Default Values
 APP="Jenkins"
