@@ -33,7 +33,7 @@
   "notes": [
     {
       "text": "Database credentials: `cat ~/firefly.creds`",
-      "type": ""
+      "type": "info"
     }
   ]
 }
