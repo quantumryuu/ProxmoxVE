@@ -1,57 +1,30 @@
 #!/usr/bin/env bash
 source <(curl -s https://raw.githubusercontent.com/community-scripts/ProxmoxVE/main/misc/build.func)
 # Copyright (c) 2021-2024 community-scripts ORG
-# Author: kristocopani
+# Author: quantumryuu
 # License: MIT
 # https://github.com/community-scripts/ProxmoxVE/raw/main/LICENSE
+# Source: https://firefly-iii.org/
 
-function header_info {
-clear
-cat <<"EOF"
-    _______           ______         ____________
-   / ____(_)_______  / __/ /_  __   /  _/  _/  _/
-  / /_  / / ___/ _ \/ /_/ / / / /   / / / / / /  
- / __/ / / /  /  __/ __/ / /_/ /  _/ /_/ /_/ /   
-/_/   /_/_/   \___/_/ /_/\__, /  /___/___/___/   
-                        /____/                   
-
-EOF
-}
-header_info
-echo -e "Loading..."
+# App Default Values
 APP="Firefly"
-var_disk="2"
+var_tags="finance"
 var_cpu="1"
 var_ram="1024"
+var_disk="2"
 var_os="debian"
 var_version="12"
+var_unprivileged="1"
+
+# App Output & Base Settings
+header_info "$APP"
+base_settings
+
+# Core
 variables
 color
 catch_errors
 
-function default_settings() {
-  CT_TYPE="1"
-  PW=""
-  CT_ID=$NEXTID
-  HN=$NSAPP
-  DISK_SIZE="$var_disk"
-  CORE_COUNT="$var_cpu"
-  RAM_SIZE="$var_ram"
-  BRG="vmbr0"
-  NET="dhcp"
-  GATE=""
-  APT_CACHER=""
-  APT_CACHER_IP=""
-  DISABLEIP6="no"
-  MTU=""
-  SD=""
-  NS=""
-  MAC=""
-  VLAN=""
-  SSH="no"
-  VERB="no"
-  echo_default
-}
 function update_script() {
 header_info
 check_container_storage
@@ -70,13 +43,12 @@ check_container_resources
     msg_info "Updating ${APP} to v${RELEASE}"
     cp /opt/firefly/.env /opt/.env
     cp -r /opt/firefly/storage /opt/storage
-    rm -rf /opt/firefly
+    rm -rf /opt/firefly/*
     cd /opt
     wget -q "https://github.com/firefly-iii/firefly-iii/releases/download/v${RELEASE}/FireflyIII-v${RELEASE}.tar.gz"
-    mkdir -p /opt/firefly
     tar -xzf FireflyIII-v${RELEASE}.tar.gz -C /opt/firefly --exclude='storage'
     cd /opt/firefly 
-    composer install --no-dev &>/dev/null
+    composer install --no-dev --no-interaction &>/dev/null
     php artisan migrate --seed --force &>/dev/null
     php artisan firefly:decrypt-all &>/dev/null
     php artisan cache:clear &>/dev/null
@@ -86,7 +58,7 @@ check_container_resources
     chown -R www-data:www-data /opt/firefly
     chmod -R 775 /opt/firefly/storage
 
-    echo "${RELEASE}" >"/opt/${APP}_version.txt" &>/dev/null
+    echo "${RELEASE}" >"/opt/${APP}_version.txt"
     msg_ok "Updated ${APP} to v${RELEASE}"
 
     msg_info "Starting Apache2"
@@ -108,5 +80,6 @@ build_container
 description
 
 msg_ok "Completed Successfully!\n"
-echo -e "${APP} should be reachable by going to the following URL.
-         ${BL}http://${IP}${CL} \n"
+echo -e "${CREATING}${GN}${APP} setup has been successfully initialized!${CL}"
+echo -e "${INFO}${YW} Access it using the following URL:${CL}"
+echo -e "${TAB}${GATEWAY}${BGN}http://${IP}${CL}"
