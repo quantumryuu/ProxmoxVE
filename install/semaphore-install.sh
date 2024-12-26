@@ -37,7 +37,7 @@ $STD dpkg -i semaphore_${RELEASE}_linux_amd64.deb
 SEM_HASH=$(openssl rand -base64 32)
 SEM_ENCRYPTION=$(openssl rand -base64 32)
 SEM_KEY=$(openssl rand -base64 32)
-SEM_PW=$(openssl rand -base64 8)
+SEM_PW=$(openssl rand -base64 12)
 cat <<EOF >/opt/semaphore/config.json
 {
   "bolt": {
@@ -51,7 +51,7 @@ cat <<EOF >/opt/semaphore/config.json
 EOF
 
 $STD semaphore user add --admin --login admin --email admin@helper-scripts.com --name Administrator --password ${SEM_PW} --config /opt/semaphore/config.json
-echo "${SEM_PW}" >~./semaphore.creds
+echo "${SEM_PW}" >~/semaphore.creds
 echo "${RELEASE}" >"/opt/${APPLICATION}_version.txt"
 msg_ok "Setup Semaphore"
 
