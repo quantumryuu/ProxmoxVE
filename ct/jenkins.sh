@@ -8,7 +8,7 @@ source <(curl -s https://raw.githubusercontent.com/community-scripts/ProxmoxVE/m
 
 # App Default Values
 APP="Jenkins"
-var_tags="Jenkins"
+var_tags="automation"
 var_cpu="2"
 var_ram="1024"
 var_disk="4"
