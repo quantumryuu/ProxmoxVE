@@ -2,7 +2,8 @@ name: Check Metadata
 'on':
   pull_request:
     paths:
-      - '**/*.sh'
+      - '/ct/*.sh'
+      - '/install/*.sh'
 jobs:
   check-metadata:
     runs-on: ubuntu-latest
