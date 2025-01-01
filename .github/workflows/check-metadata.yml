@@ -1,5 +1,5 @@
 name: Check Metadata
-'on':
+on:
   pull_request:
     paths:
       - '/ct/*.sh'
