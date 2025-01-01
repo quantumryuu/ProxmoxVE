@@ -23,10 +23,8 @@ echo "deb [signed-by=/usr/share/keyrings/deb.sury.org-php.gpg] https://packages.
 $STD apt-get update
 $STD apt-get install -y \
     apache2 \
-    php8.3 \
-    php8.3-cli \
     libapache2-mod-php8.3 \
-    php8.3-{bcmath,intl,curl,zip,gd,xml,mbstring,mysql} \
+    php8.3-{bcmath,cli,intl,curl,zip,gd,xml,mbstring,mysql} \
     mariadb-server \
     composer
 msg_ok "Installed Dependencies"
@@ -46,8 +44,6 @@ mysql -u root -e "GRANT ALL ON $DB_NAME.* TO '$DB_USER'@'localhost'; FLUSH PRIVI
     echo "Firefly Database Name: $DB_NAME"
 } >> ~/firefly.creds
 msg_ok "Set up database"
-
-
 
 msg_info "Installing Firefly III (Patience)"
 RELEASE=$(curl -s https://api.github.com/repos/firefly-iii/firefly-iii/releases/latest | grep "tag_name" | awk '{print substr($2, 3, length($2)-4)}')
