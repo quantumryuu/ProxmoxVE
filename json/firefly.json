@@ -4,7 +4,7 @@
   "categories": [
     0
   ],
-  "date_created": "2024-12-26",
+  "date_created": "2025-01-01",
   "type": "ct",
   "updateable": true,
   "privileged": false,
@@ -12,7 +12,7 @@
   "documentation": "https://docs.firefly-iii.org/",
   "website": "https://firefly-iii.org/",
   "logo": "https://raw.githubusercontent.com/firefly-iii/firefly-iii/develop/.github/assets/img/logo-small.png",
-  "description": "A free and open source personal finance manager",
+  "description": "Firefly III is a free, self-hosted tool for managing your finances. Track expenses, plan budgets, and get detailed reports.",
   "install_methods": [
     {
       "type": "default",
