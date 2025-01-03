@@ -1,0 +1,34 @@
+name: Check lowercase in filenames
+on:
+  pull_request:
+    paths:
+      - '/ct/*.sh'
+      - '/install/*.sh'
+jobs:
+  check-metadata:
+    runs-on: lxc
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+      - name: Check lowercase in filenames
+        shell: bash
+        run: |
+          set -e
+          ERROR_COUNT=0
+          FILES=$(find . -name "*.sh")
+
+          for FILE in $FILES; do
+            if [[ "$FILE" =~ ^[a-z0-9._-]+$ ]]; then
+                echo "$FILE: Check for lowercase in filename passed."
+            else
+                echo "Error in $FILE. Change filename to lowercase."
+                ERROR_COUNT=$((ERROR_COUNT + 1))
+            fi
+          done
+
+          if [[ "$ERROR_COUNT" -gt 0 ]]; then
+              echo "$ERROR_COUNT script(s) failed validation."
+              exit 1
+          else
+              echo "All scripts passed."
+          fi
