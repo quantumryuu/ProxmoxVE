@@ -22,7 +22,7 @@ jobs:
         id: changed-files
         run: |
           # List added or modified files in the PR that match *.sh
-          git diff --name-only --diff-filter=AM origin/main | grep -E '^(ct|install)/.*\.sh$' || true
+          git diff --name-only --diff-filter=AM origin/main | grep -E '^ct/[^/]*\.sh$|^install/[^/]*\.sh$' || true
           echo "::set-output name=result::$(git diff --name-only --diff-filter=AM origin/main | grep -E '^(ct|install)/.*\.sh$' || true)"
         shell: bash
 
