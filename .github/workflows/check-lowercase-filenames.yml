@@ -1,9 +1,7 @@
 name: Check lowercase in filenames
 
 on:
-  pull_request_target:
-    branches: ["main"]
-    types: [opened, synchronize, reopened, edited]
+  pull_request:
     paths:
       - '/ct/*.sh'
       - '/install/*.sh'
