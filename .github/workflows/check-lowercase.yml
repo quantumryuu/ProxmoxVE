@@ -5,7 +5,7 @@ on:
       - '/ct/*.sh'
       - '/install/*.sh'
 jobs:
-  check-metadata:
+  check-lowercase-filenames:
     runs-on: lxc
     steps:
       - name: Checkout Code
