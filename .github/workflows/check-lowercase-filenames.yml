@@ -1,41 +1,3 @@
-# name: Check lowercase in filenames
-
-# on:
-#   pull_request:
-#     paths:
-#       - '/ct/*.sh'
-#       - '/install/*.sh'
-      
-# jobs:
-#   check-lowercase-filenames:
-#     runs-on: lxc
-#     steps:
-#       - name: Checkout Code
-#         uses: actions/checkout@v4
-#       - name: Check lowercase in filenames
-#         shell: bash
-#         run: |
-#           set -e
-#           ERROR_COUNT=0
-#           FILES=$(find . -name "*.sh")
-
-#           for FILE in $FILES; do
-#             if [[ "$FILE" =~ ^[a-z0-9._-]+$ ]]; then
-#                 echo "$FILE: Check for lowercase in filename passed."
-#             else
-#                 echo "Error in $FILE. Change filename to lowercase."
-#                 ERROR_COUNT=$((ERROR_COUNT + 1))
-#             fi
-#           done
-
-#           if [[ "$ERROR_COUNT" -gt 0 ]]; then
-#               echo "$ERROR_COUNT script(s) failed validation."
-#               exit 1
-#           else
-#               echo "All scripts passed."
-#           fi
-
-
 name: Check lowercase in filenames
 
 on:
@@ -50,15 +12,21 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
-        
-      - name: Get changed files
+        with:
+          fetch-depth: 0  # Ensure full history is fetched to access the base branch
+
+      - name: Fetch Default Branch
+        run: git fetch origin main
+
+      - name: Get Changed Files
         id: changed-files
         run: |
           # List added or modified files in the PR that match *.sh
           git diff --name-only --diff-filter=AM origin/main | grep -E '^(ct|install)/.*\.sh$' || true
+          echo "::set-output name=result::$(git diff --name-only --diff-filter=AM origin/main | grep -E '^(ct|install)/.*\.sh$' || true)"
         shell: bash
 
-      - name: Check lowercase in filenames
+      - name: Check Lowercase in Filenames
         shell: bash
         run: |
           set -e
