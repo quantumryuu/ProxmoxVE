@@ -1,34 +1,43 @@
-name: Check lowercase in filenames
+name: Check Lowercase Filenames
+
 on:
   pull_request:
     paths:
-      - '/ct/*.sh'
-      - '/install/*.sh'
-jobs:
-  check-metadata:
-    runs-on: lxc
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-      - name: Check lowercase in filenames
-        shell: bash
-        run: |
-          set -e
-          ERROR_COUNT=0
-          FILES=$(find . -name "*.sh")
+      - 'ct/**'
+      - 'install/**'
 
-          for FILE in $FILES; do
-            if [[ "$FILE" =~ ^[a-z0-9._-]+$ ]]; then
-                echo "$FILE: Check for lowercase in filename passed."
-            else
-                echo "Error in $FILE. Change filename to lowercase."
-                ERROR_COUNT=$((ERROR_COUNT + 1))
-            fi
+jobs:
+  check_lowercase:
+    runs-on: lxc
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Validate filenames are lowercase
+      - name: Validate filenames are lowercase
+        run: |
+          # Get the list of changed files
+          changed_files=$(git diff --name-only origin/${{ github.base_ref }}...HEAD | grep -E '^(ct|install)/')
+
+          ERROR_COUNT=0
+
+          # Process each file safely using newline as delimiter
+          echo "$changed_files" | while IFS= read -r FILE; do
+              BASENAME=$(basename "$FILE")
+              if [[ "$BASENAME" =~ ^[a-z0-9._-]+$ ]]; then
+                  echo "$FILE: Check for lowercase in filename passed."
+              else
+                  echo "Error in $FILE. Change filename to lowercase."
+                  ERROR_COUNT=$((ERROR_COUNT + 1))
+              fi
           done
 
-          if [[ "$ERROR_COUNT" -gt 0 ]]; then
-              echo "$ERROR_COUNT script(s) failed validation."
+          # Fail the workflow if any errors are found
+          if [ "$ERROR_COUNT" -ne 0 ]; then
+              echo "$ERROR_COUNT script(s) have invalid filenames."
               exit 1
           else
-              echo "All scripts passed."
+              echo "All filenames passed the lowercase check."
           fi
